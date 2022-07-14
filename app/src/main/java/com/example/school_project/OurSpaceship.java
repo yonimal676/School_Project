@@ -18,12 +18,14 @@ public class OurSpaceship {
     private GameView gameView;
     // our shots
 
-    OurSpaceship (GameView gameView, int ScreenX, int ScreenY, Resources res, float screenRatioX, float screenRatioY)
+
+    OurSpaceship (GameView gameView, int ScreenX, int ScreenY, Resources res,
+                  float screenRatioX, float screenRatioY)
     {
         this.gameView = gameView;
 
-        width = 130;
-        height = 160;
+        width = 200;
+        height = 220;
 
         SpaceshipBitmap = BitmapFactory
                 .decodeResource(res, R.drawable.spaceship);         // set bitmap's image
@@ -113,7 +115,7 @@ public class OurSpaceship {
         return isXinside && isYinside;
     }
 
-    Rect getCollisionShape () {
+    Rect getRect () {
         return new Rect((int) x,(int) y, (int) (x + width), (int) (y + height ));
     }
 }

@@ -10,13 +10,17 @@ public class Flame
     Bitmap flameBitmap;
     int width, height;
 
-    Flame (float x, float y, Resources res)
+    Flame (float x, float y, Resources res,
+           float screenRatioX, float screenRatioY)
     {
-        width = 110;
-        height = 200;
+        width = 100;
+        height = 220;
 
         flameBitmap = BitmapFactory.decodeResource(res, R.drawable.flame);
-        flameBitmap = Bitmap.createScaledBitmap(flameBitmap,width,height,false);
+        flameBitmap = Bitmap.createScaledBitmap(flameBitmap,
+                (int)(width * screenRatioX),
+                (int)(height * screenRatioY),
+                false);
 
         this.x = x;
         this.y = y;

@@ -23,8 +23,7 @@ public class OurShot
         // scale the image in the bitmap
     }
 
-    public Rect getCollisionShape () {
-        return new Rect((int)x +5,(int)y +10, (int)
-                (x + width -5), (int) (y + height -5));
+    public Rect getRect () {
+        return new Rect((int)x +5,(int)y +5, (int) (x + width -5), (int) (y + height -5));
     }
 }

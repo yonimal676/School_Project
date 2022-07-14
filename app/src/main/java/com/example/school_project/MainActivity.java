@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,6 +15,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 {
 
     Button playButton;
+    SharedPreferences savePrefs;
+    Intent intent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if (v == playButton)
         {
-            startActivity(new Intent(MainActivity.this, GameActivity.class));
+            intent = new Intent(MainActivity.this, GameActivity.class);
+            // put extra..
+            startActivity(intent);
         }
     }
 }
