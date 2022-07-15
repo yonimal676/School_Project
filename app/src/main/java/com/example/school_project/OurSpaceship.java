@@ -10,13 +10,11 @@ public class OurSpaceship {
     float x, y;                     // coordinates of our spaceship
     Bitmap SpaceshipBitmap;         // image of our spaceship
     boolean actionDown = false;     // down => touchDown (on the screen).
-    // our spaceship
 
     int shootCounter = 1;
     int toShoot = 0;
-    Bitmap shot1, shot2, shot3, shot4, shot5;
+    Bitmap shot;
     private GameView gameView;
-    // our shots
 
 
     OurSpaceship (GameView gameView, int ScreenX, int ScreenY, Resources res,
@@ -24,8 +22,8 @@ public class OurSpaceship {
     {
         this.gameView = gameView;
 
-        width = 200;
-        height = 220;
+        width = 150;
+        height = 155;
 
         SpaceshipBitmap = BitmapFactory
                 .decodeResource(res, R.drawable.spaceship);         // set bitmap's image
@@ -39,18 +37,10 @@ public class OurSpaceship {
 
 
 
-        shot1 = BitmapFactory.decodeResource(res, R.drawable.our_shot);
-        shot2 = BitmapFactory.decodeResource(res, R.drawable.our_shot);
-        shot3 = BitmapFactory.decodeResource(res, R.drawable.our_shot);
-        shot4 = BitmapFactory.decodeResource(res, R.drawable.our_shot);
-        shot5 = BitmapFactory.decodeResource(res, R.drawable.our_shot);
+        shot = BitmapFactory.decodeResource(res, R.drawable.our_shot);
 
 
-        shot1 = Bitmap.createScaledBitmap(shot1, 50, 50, false);
-        shot2 = Bitmap.createScaledBitmap(shot2, 50, 50, false);
-        shot3 = Bitmap.createScaledBitmap(shot3, 50, 50, false);
-        shot4 = Bitmap.createScaledBitmap(shot4, 50, 50, false);
-        shot5 = Bitmap.createScaledBitmap(shot5, 50, 50, false);
+        shot = Bitmap.createScaledBitmap(shot, 1, 1, false); // the first one would be invisible, chan
 
     }
 
@@ -58,32 +48,31 @@ public class OurSpaceship {
     public Bitmap getSpaceshipBitmap()
     {
         if (toShoot != 0) {
+            switch (shootCounter) {
+                case 1:
+                    shootCounter++;
+                    return shot;
+                case 2:
+                    shootCounter++;
+                    return shot;
+                case 3:
+                    shootCounter++;
+                    return shot;
+                case 4:
+                    shootCounter++;
+                    return shot;
+                case 5:
+                    shootCounter++;
+                    return shot;
 
-            if (shootCounter == 1) {
-                shootCounter++;
-                return shot1;
+
+                default:
+                    shootCounter = 1;
+                    toShoot--;
+                    gameView.newShot();
+
+                    return shot;
             }
-
-            if (shootCounter == 2) {
-                shootCounter++;
-                return shot2;
-            }
-
-            if (shootCounter == 3) {
-                shootCounter++;
-                return shot3;
-            }
-
-            if (shootCounter == 4) {
-                shootCounter++;
-                return shot4;
-            }
-
-            shootCounter = 1;
-            toShoot--;
-            gameView.newShot();
-
-            return shot5;
         }
 
         return SpaceshipBitmap; // if no shot is needed, just redraw the ourSpaceship again.

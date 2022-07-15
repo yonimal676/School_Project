@@ -11,22 +11,20 @@ public class EnemyShot
     int width, height;
     Bitmap EnemyShotBitmap;
 
-    public EnemyShot (Resources res)
+    EnemyShot (Resources res)
     {
-        width = 50;
-        height = 50;
+        width = 80;
+        height = 80;
 
         EnemyShotBitmap = BitmapFactory
                 .decodeResource(res, R.drawable.enemy_shot);// set bitmap image
 
-        EnemyShotBitmap = Bitmap.createScaledBitmap
-                (EnemyShotBitmap, width, height, false);
+        EnemyShotBitmap = Bitmap.createScaledBitmap (EnemyShotBitmap, width, height, false);
         // scale the image in the bitmap
     }
 
-    public Rect getRect () {
-        return new Rect((int)x +5,(int)y +10, (int)
-                (x + width -5), (int) (y + height +5));
+    public Rect getRect () {return new Rect
+            ((int)x +5,(int)y +10, (int) (x + width -5), (int) (y + height +5));
     }
 
 }

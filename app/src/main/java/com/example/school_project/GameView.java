@@ -1,6 +1,7 @@
 package com.example.school_project;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -26,6 +27,10 @@ public class GameView extends SurfaceView implements Runnable
     private Thread thread;
     private boolean isPlaying, isGameOver = false;
     Context GameViewContext;
+    int sleepMS = 17;
+    int seconds = 0;
+    int second = 1000 / sleepMS;
+
     // ⩕ threads
 
     private int screenX, screenY;                   // size of screen
@@ -60,11 +65,11 @@ public class GameView extends SurfaceView implements Runnable
         screenRatioY = 1920 / screenY; // top to bottom
         //for equal resolution on all devices.
 
-        ourSpaceship = new OurSpaceship(this,screenX /2 -100,           // screenX : half of the size of the spaceship
-                screenY -250 , getResources(), screenRatioX, screenRatioY);       // screenY : 250 above the bottom of the screen
+        ourSpaceship = new OurSpaceship(this,screenX /2 -100,
+                screenY -250 , getResources(), screenRatioX, screenRatioY);
 
         flame = new Flame((ourSpaceship.x + 10) * screenRatioX,
-                200 * screenRatioY,
+                (ourSpaceship.y  + 300) * screenRatioY ,
                 getResources(), screenRatioX, screenRatioY);
 
         listOurShot = new ArrayList<>();
@@ -107,19 +112,6 @@ public class GameView extends SurfaceView implements Runnable
 
 
             iterationCounter ++ ;
-
-/*            if (iterationCounter % 25 == 0)
-            {
-                shootCounter++;
-                //   enemySpaceship.toShoot();
-            }*/
-
-            Log.d("iterationCounter", iterationCounter + "");
-//            Log.d("shootCounter", shootCounter + "");
-            Log.d("toShoot", ourSpaceship.toShoot + "");
-            Log.d("shootC", ourSpaceship.shootCounter + "");
-
-
         }
     }
 
@@ -136,10 +128,11 @@ public class GameView extends SurfaceView implements Runnable
     public void newEnemyShot()
     {
         EnemyShot enemyShot = new EnemyShot (getResources());// whats getResources()?
-        enemyShot.x = enemyShot.x + enemySpaceship.width /2;
+        enemyShot.x = enemySpaceship.x + enemySpaceship.width /2;
         enemyShot.y = enemySpaceship.y + enemySpaceship.height;
 
         listEnemyShot.add(enemyShot);
+
         Log.d("ARR", listEnemyShot.size() + "");
     }
 
@@ -153,35 +146,73 @@ public class GameView extends SurfaceView implements Runnable
             screenCanvas.drawBitmap(background1.background, background1.x, background1.y, paint);
             screenCanvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
-            screenCanvas.drawBitmap(enemySpaceship.EnemyBitmap, enemySpaceship.x, enemySpaceship.y, paint);
-            screenCanvas.drawBitmap(ourSpaceship.SpaceshipBitmap, ourSpaceship.x, ourSpaceship.y, paint);
+            screenCanvas.drawBitmap(enemySpaceship.EnemyBitmap, enemySpaceship.x,
+                    enemySpaceship.y, paint);
+            screenCanvas.drawBitmap(ourSpaceship.SpaceshipBitmap, ourSpaceship.x,
+                    ourSpaceship.y, paint);
 
 
-/*
 
-            if (iterationCounter >= 50)
-            {
+
+//            if ((iterationCounter >= second) && (iterationCounter < second * 3))
+//            {
                 enemySpaceship.toShoot = 1;
 
+
                 screenCanvas.drawBitmap(enemySpaceship.getEnemyBitmap(), enemySpaceship.x, enemySpaceship.y, paint);
+
 
                 for (EnemyShot enemyShot : listEnemyShot)
                     screenCanvas.drawBitmap(enemyShot.EnemyShotBitmap, enemyShot.x, enemyShot.y, paint);
 
-                iterationCounter -= 50;
-            }
+
+                seconds++; // to see how many seconds have passed
+                Log.d("seconds", seconds + "");
+           /* }
+
+            else
+                iterationCounter -= second * 3;
+
 */
 
 
             // pressed mode ↓↓↓
-            if (ourSpaceship.getActionDown())
+            if (ourSpaceship.getActionDown() /*&& listEnemyShot.isEmpty()*/) // something like that...
+
             {
+                /*
+
+
+                enemySpaceship.toShoot = 1;
+
+                screenCanvas.drawBitmap(enemySpaceship.getEnemyBitmap(), enemySpaceship.x, enemySpaceship.y, paint);
+
+
+                for (EnemyShot enemyShot : listEnemyShot)
+                    screenCanvas.drawBitmap(enemyShot.EnemyShotBitmap, enemyShot.x, enemyShot.y, paint);
+
+                iterationCounter -= second;
+
+                seconds++; // to see how many seconds have passed
+                Log.d("seconds", seconds + "");
+*/
+
+
+
+
+
+
+
+
+
+
                 ourSpaceship.toShoot = 1;
 
-                screenCanvas.drawBitmap(flame.flameBitmap , (ourSpaceship.x + 50) * screenRatioX ,
-                        (ourSpaceship.y + 130) * screenRatioY, paint);
+                screenCanvas.drawBitmap(flame.flameBitmap , (ourSpaceship.x + 35) * screenRatioX ,
+                        (ourSpaceship.y + ourSpaceship.height) * screenRatioY, paint);
 
-                screenCanvas.drawBitmap(ourSpaceship.getSpaceshipBitmap(), ourSpaceship.x, ourSpaceship.y, paint);
+                screenCanvas.drawBitmap(ourSpaceship.getSpaceshipBitmap(), ourSpaceship.x,
+                        ourSpaceship.y, paint);
 
                 for (OurShot ourShot : listOurShot)
                     screenCanvas.drawBitmap(ourShot.OurShotBitmap, ourShot.x, ourShot.y, paint);
@@ -229,7 +260,7 @@ public class GameView extends SurfaceView implements Runnable
 
         List <EnemyShot> listEnemyShotTRASH = new ArrayList<>();
 
-        for (EnemyShot enemyShot : listEnemyShotTRASH)
+        for (EnemyShot enemyShot : listEnemyShot)
         {
             if (enemyShot.y > screenY)
                 listEnemyShotTRASH.add(enemyShot);
@@ -237,7 +268,10 @@ public class GameView extends SurfaceView implements Runnable
             enemyShot.y += 30; // enemyShot.speed...
 
             if (Rect.intersects(enemyShot.getRect(), ourSpaceship.getRect()))
+            {
+                enemyShot.y = 3000; // off-screen
                 listEnemyShotTRASH.add(enemyShot);
+            }
         }
 
         for (EnemyShot enemyShot : listEnemyShotTRASH)
@@ -268,7 +302,7 @@ public class GameView extends SurfaceView implements Runnable
 
     private void sleep() {
         try {
-            Thread.sleep(17);
+            Thread.sleep(sleepMS); // = 17
         }
         catch (InterruptedException e) {e.printStackTrace();}
     } // So the background would seem to be moving
@@ -311,10 +345,12 @@ public class GameView extends SurfaceView implements Runnable
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (ourSpaceship.getActionDown() && (ourSpaceship.didTouchInBounds(event.getX(),event.getY())))
-                    ourSpaceship.setPosition(event.getX() - ourSpaceship.width /2, event.getY() - ourSpaceship.width /2);
+                    ourSpaceship.setPosition(event.getX() - ourSpaceship.width /2,
+                            event.getY() - ourSpaceship.height /2);
                 break;
             case MotionEvent.ACTION_UP:
                 ourSpaceship.setActionDown(false);
+
                 break;
         }
         return true;

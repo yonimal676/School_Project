@@ -13,7 +13,7 @@ public class Flame
     Flame (float x, float y, Resources res,
            float screenRatioX, float screenRatioY)
     {
-        width = 100;
+        width = 130;
         height = 220;
 
         flameBitmap = BitmapFactory.decodeResource(res, R.drawable.flame);
