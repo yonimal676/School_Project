@@ -13,15 +13,15 @@
     >
 
     <TextView
+        android:id="@+id/highScoreTXT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:textColor="@color/white"
-        android:text="00"
-        android:textSize="60dp"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        />
+        android:layout_alignParentRight="true"
+        android:text="00"
+        android:textColor="@color/white"
+        android:textSize="60dp" />
 
 
     <Button
@@ -34,4 +34,16 @@
         android:background="@drawable/org_play"
 
         />
+
+
+    <ImageView
+        android:id="@+id/volumeIV"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+
+        android:src="@drawable/volume_iv"
+        />
+
 </RelativeLayout>
