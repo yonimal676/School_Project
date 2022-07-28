@@ -1,10 +1,7 @@
 package com.example.school_project;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -13,17 +10,12 @@ import android.graphics.Rect;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-
-import androidx.appcompat.app.AppCompatDialogFragment;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +30,13 @@ public class GameView extends SurfaceView implements Runnable
     private int intSound;
     private  int life = 3;
     private Pause pause;
+    Context gameViewContext;
     // ⩕ game
 
     private SharedPreferences prefs;
     private Thread thread;
     private boolean isPlaying, isGameOver = false;
-    Context GameViewContext;
-    private GameActivity activity;
+    public GameActivity activity;
     int sleepMS = 17;
     // ⩕ threads
 
@@ -64,11 +56,13 @@ public class GameView extends SurfaceView implements Runnable
     // ⩕ enemy spaceship
 
 
+
     public GameView (GameActivity activity, int screenX, int screenY)
     {
         super(activity); //  <- super(Context);
 
         this.activity = activity;
+        gameViewContext = this.activity; ////////////////////////////////////////////////////
 
         prefs = activity.getSharedPreferences("game", Context.MODE_PRIVATE);
         // not really that important, but this will hide the game from other apps on the phone
@@ -89,7 +83,6 @@ public class GameView extends SurfaceView implements Runnable
                     0);
 
         intSound = soundPool.load(activity, R.raw.shoot, 1);
-
 
 
         this.screenX = screenX;
@@ -117,7 +110,7 @@ public class GameView extends SurfaceView implements Runnable
         listEnemyShot = new ArrayList<>();
 
 
-        pause = new Pause(50, 50 , 20,20,getResources());
+        pause = new Pause(20,20,getResources());
 
 
         background1 = new Background(screenX, screenY, getResources());
@@ -232,7 +225,7 @@ public class GameView extends SurfaceView implements Runnable
                 getHolder().unlockCanvasAndPost(screenCanvas);
                 saveIfHighScore();
                 waitBeforeExiting();
-                return; // what the fuck
+                return; // draw nothing
             }
 
 
@@ -342,7 +335,7 @@ public class GameView extends SurfaceView implements Runnable
 
     public void resume() {
         isPlaying = true;
-        thread = new Thread(this);
+        thread = new Thread(this); // -> "this" is the run() method above.
         thread.start();
     } // resume the game
 
@@ -351,9 +344,15 @@ public class GameView extends SurfaceView implements Runnable
         try {
             isPlaying = false;
             thread.join(); // join = stop
+            Thread.sleep(500);
+
+
+            activity.PauseMenu();
         }
         catch (InterruptedException e) {e.printStackTrace();}
     } // pause the game
+
+
 
     public void dead () {
 
@@ -375,8 +374,14 @@ public class GameView extends SurfaceView implements Runnable
                     ourSpaceship.setActionDown(true);
 
                 if (pause.didTouchInBounds(event.getX(), event.getY()))
-                    pause();
+                {
+                    if (isPlaying)
+                        activity.onPause(); // we could theoretically also call 'this.pause()' , it's just less comfortable.
+                    else
+                        activity.onResume();
+                }
                 break;
+
             case MotionEvent.ACTION_MOVE:
                 if (ourSpaceship.getActionDown() && (ourSpaceship.didTouchInBounds(event.getX()
                         ,event.getY())))
@@ -403,34 +408,3 @@ public class GameView extends SurfaceView implements Runnable
 }
 
 
-
-class exampleDialog extends AppCompatDialogFragment
-{
-    void watchYoutubeVideo(String id)
-    {
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + id));
-        try {
-            startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
-            startActivity(webIntent);
-        }
-    }
-
-
-    public Dialog onCreateDialog (Bundle savedInstanceState)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setTitle("Totaly legit %100!!!!!")
-                .setMessage("This is a Dialog.")
-                .setPositiveButton("cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int i) {
-                                watchYoutubeVideo("dQw4w9WgXcQ");
-                            }});
-
-        return builder.create();
-    }
-}

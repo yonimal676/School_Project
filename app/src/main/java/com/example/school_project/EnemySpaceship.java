@@ -41,13 +41,13 @@ public class EnemySpaceship
 
         shot = Bitmap.createScaledBitmap(shot, 1, 1, false);
 
-    }
+    } /* The wall of shame ... ↓  */
 
     public Bitmap getEnemyBitmap ()   // try some sort of array...
     {
         if (toShoot != 0)
         {
-            switch (shootCounter) // the less cases, the bigger the shooting frequency
+            switch (shootCounter) // the less cases, the quicker the shooting.
             {
                 case 1:
                     shootCounter++;
