@@ -8,7 +8,7 @@ import android.graphics.Rect;
 public class OurSpaceship {
     int width, height;
     float x, y;                     // coordinates of our spaceship
-    Bitmap SpaceshipBitmap;         // image of our spaceship
+    Bitmap SpaceshipBitmap, DeadBitmap;         // image of our spaceship
     boolean actionDown = false;     // down => touchDown (on the screen).
 
     int shootCounter = 1;
@@ -32,6 +32,13 @@ public class OurSpaceship {
                 (SpaceshipBitmap, (int) (width * screenRatioX), (int) (height * screenRatioY), false);
         // scale the image
 
+        DeadBitmap = BitmapFactory
+                .decodeResource(res, R.drawable.spaceship_dead);
+
+        DeadBitmap = Bitmap.createScaledBitmap
+                (DeadBitmap, (int) (width * screenRatioX), (int) (height * screenRatioY), false);
+
+
         x = ScreenX; // x coordinate on the screen
         y = ScreenY; // y coordinate on the screen
 
@@ -40,12 +47,13 @@ public class OurSpaceship {
         shot = BitmapFactory.decodeResource(res, R.drawable.our_shot);
 
 
-        shot = Bitmap.createScaledBitmap(shot, 1, 1, false); // the first one would be invisible, chan
+        shot = Bitmap.createScaledBitmap(shot, 1, 1, false);
+        // the first one would be invisible, to understand, change the 1,1 to 50,50.
 
     }
 
 
-    public Bitmap getSpaceshipBitmap()
+    public Bitmap getSpaceshipBitmap() // cannot be in an array because then it would shoot like a laser.
     {
         if (toShoot != 0) {
             switch (shootCounter) {

@@ -15,15 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 public class GameActivity extends AppCompatActivity
 {
     private GameView gameView;
-    Bundle savedInstanceState;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        this.savedInstanceState = savedInstanceState;
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // play the game on the whole screen
@@ -66,16 +63,14 @@ public class GameActivity extends AppCompatActivity
         AlertDialog finishDialog = builder.create();
 
         // for example
-        finishDialog.setButton(AlertDialog.BUTTON_POSITIVE, "POSITIVE", (dialog, id) -> {
+        finishDialog.setButton(AlertDialog.BUTTON_POSITIVE, "CONTINUE", (dialog, id) -> {
             finishDialog.dismiss();
             onResume();
         });
         // see 'DialogInterface.OnClickListener()' for more information on this.
 
-        finishDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "RETURN TO MAIN MENU", (dialog, id) -> finish()); // lambdas are awesome. (same as above)
-
+        finishDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "RETURN TO MAIN MENU", (dialog, id) -> finish());
         finishDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "( ͡° ͜ʖ ͡°)", (dialog, id) -> watchYoutubeVideo());
-
 
         finishDialog.show();
     }

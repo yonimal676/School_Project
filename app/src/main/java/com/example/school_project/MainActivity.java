@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 public class MainActivity extends AppCompatActivity
 {
-
     private boolean isMute;
 
     @Override
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
         SharedPreferences prefs = getSharedPreferences("game", MODE_PRIVATE);
         highScoreText.setTextColor(Color.WHITE);
+        highScoreText.setTextSize(25);
         highScoreText.setText("Highscore: " + prefs.getInt("highscore", 0));
 
         isMute = prefs.getBoolean("isMute", false);
@@ -59,10 +59,6 @@ public class MainActivity extends AppCompatActivity
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("isMute", isMute);
             editor.apply();
-
-
         });
-
     }
-
 }

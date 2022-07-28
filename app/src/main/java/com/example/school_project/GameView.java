@@ -20,6 +20,8 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+/** final commit */
+
 public class GameView extends SurfaceView implements Runnable
 { // the game's content view
 
@@ -35,7 +37,7 @@ public class GameView extends SurfaceView implements Runnable
 
     private SharedPreferences prefs;
     private Thread thread;
-    private boolean isPlaying, isGameOver = false;
+    public boolean isPlaying, isGameOver = false;
     public GameActivity activity;
     int sleepMS = 17;
     // ⩕ threads
@@ -47,6 +49,7 @@ public class GameView extends SurfaceView implements Runnable
     private OurSpaceship ourSpaceship;
     private List<OurShot> listOurShot;
     private Flame flame;
+    private Heart heart1, heart2, heart3;
     // ⩕ our spaceship
 
     private EnemySpaceship enemySpaceship;
@@ -62,7 +65,7 @@ public class GameView extends SurfaceView implements Runnable
         super(activity); //  <- super(Context);
 
         this.activity = activity;
-        gameViewContext = this.activity; ////////////////////////////////////////////////////
+        gameViewContext = this.activity;
 
         prefs = activity.getSharedPreferences("game", Context.MODE_PRIVATE);
         // not really that important, but this will hide the game from other apps on the phone
@@ -81,18 +84,17 @@ public class GameView extends SurfaceView implements Runnable
         } else
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC,
                     0);
-
         intSound = soundPool.load(activity, R.raw.shoot, 1);
 
 
         this.screenX = screenX;
         this.screenY = - screenY;
-        /* NOTICE: The ( - ) is there because the background moves up in the 4th quarter ↓
-         * and we want to make it like the 2nd quarter */
+        /** NOTICE: The ( - ) is there because the background moves up in the 4th quarter ↓
+          and we want to make it like the 2nd quarter */
 
         screenRatioX = 1080 / screenX; // side to side
         screenRatioY = 1920 / screenY; // top to bottom
-        //for equal resolution ( 1920x1080 ) on all devices.
+        // for equal resolution ( 1920x1080 ) on all devices.
 
         ourSpaceship = new OurSpaceship(this,screenX /2 -100,
                 screenY -250 , getResources(), screenRatioX, screenRatioY);
@@ -103,15 +105,17 @@ public class GameView extends SurfaceView implements Runnable
 
         listOurShot = new ArrayList<>();
 
-
         enemySpaceship = new EnemySpaceship(this, screenX / 2 -100,
                 200, getResources(), screenRatioX, screenRatioY);
 
         listEnemyShot = new ArrayList<>();
 
 
-        pause = new Pause(20,20,getResources());
+        heart1 = new Heart(screenX -75, 25, screenRatioX, screenRatioY , getResources());
+        heart2 = new Heart(screenX -125, 25, screenRatioX, screenRatioY , getResources());
+        heart3 = new Heart(screenX - 175, 25, screenRatioX, screenRatioY , getResources());
 
+        pause = new Pause(20,20,getResources());
 
         background1 = new Background(screenX, screenY, getResources());
         background2 = new Background(screenX, screenY, getResources());
@@ -132,12 +136,8 @@ public class GameView extends SurfaceView implements Runnable
         {
             update();  // the bitmaps on the screen
             draw();    // redraw everything on screen
-            sleep();   // for 17 milliseconds
-        }
-
-        if (isPlaying == false && isGameOver == false) // if paused
-        {
-
+            sleep();   // for 17 milliseconds,
+            // by the way, if you lower the number the game would be on hard mode!! (also; higher = easier)
         }
     }
 
@@ -189,6 +189,26 @@ public class GameView extends SurfaceView implements Runnable
                 screenCanvas.drawBitmap(enemyShot.EnemyShotBitmap, enemyShot.x, enemyShot.y, paint);
 
 
+            switch (life) {
+                case 3:
+                    screenCanvas.drawBitmap(heart1.heartBitmap, heart1.x, heart1.y, paint);
+                    screenCanvas.drawBitmap(heart2.heartBitmap, heart2.x, heart2.y, paint);
+                    screenCanvas.drawBitmap(heart3.heartBitmap, heart3.x, heart3.y, paint);
+                    break;
+                case 2:
+                    screenCanvas.drawBitmap(heart1.heartBitmap, heart1.x, heart1.y, paint);
+                    screenCanvas.drawBitmap(heart2.heartBitmap, heart2.x, heart2.y, paint);
+                    break;
+                case 1:
+                    screenCanvas.drawBitmap(heart1.heartBitmap, heart1.x, heart1.y, paint);
+                    break;
+
+                default:
+                    screenCanvas.drawBitmap(ourSpaceship.DeadBitmap, ourSpaceship.x, ourSpaceship.y, paint);
+
+
+            }
+
             // pressed mode ↓↓↓
             if (ourSpaceship.getActionDown())
             {
@@ -216,9 +236,6 @@ public class GameView extends SurfaceView implements Runnable
                 enemySpaceship.setPosition(enemySpaceship.x - 12, enemySpaceship.y);
             /* ⩕  Enemy movement ~(￣▽￣)~ */
 
-
-//            screenCanvas.drawText(score + "", screenX / 2, 10, paint);
-
             if (isGameOver)
             {
                 isPlaying = false;
@@ -227,8 +244,6 @@ public class GameView extends SurfaceView implements Runnable
                 waitBeforeExiting();
                 return; // draw nothing
             }
-
-
             getHolder().unlockCanvasAndPost(screenCanvas);
         }
     } // Draw everything on screen.
@@ -237,7 +252,7 @@ public class GameView extends SurfaceView implements Runnable
     private void waitBeforeExiting() {
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(2000);
             activity.startActivity(new Intent(activity, MainActivity.class));
             activity.finish();
 
@@ -271,6 +286,7 @@ public class GameView extends SurfaceView implements Runnable
             background2.y = screenY; // 2
 
 
+
         List <EnemyShot> listEnemyShotTRASH = new ArrayList<>();
 
         for (EnemyShot enemyShot : listEnemyShot)
@@ -284,7 +300,9 @@ public class GameView extends SurfaceView implements Runnable
             {
                 life--;
                 if (life == 0)
+                {
                     isGameOver = true;
+                }
 
                 enemyShot.y = 3000; // off-screen
                 listEnemyShotTRASH.add(enemyShot);
@@ -314,14 +332,6 @@ public class GameView extends SurfaceView implements Runnable
 
         for (OurShot ourShotTrash : listOurShotTRASH)
             listOurShot.remove(ourShotTrash);
-
-
-
-
-
-
-
-
     } // update the objects on screen
 
     private void sleep() {
@@ -329,9 +339,7 @@ public class GameView extends SurfaceView implements Runnable
             Thread.sleep(sleepMS); // = 17
         }
         catch (InterruptedException e) {e.printStackTrace();}
-    } // So the background would seem to be moving
-
-
+    }
 
     public void resume() {
         isPlaying = true;
@@ -344,20 +352,12 @@ public class GameView extends SurfaceView implements Runnable
         try {
             isPlaying = false;
             thread.join(); // join = stop
-            Thread.sleep(500);
-
+            Thread.sleep(100);
 
             activity.PauseMenu();
         }
         catch (InterruptedException e) {e.printStackTrace();}
     } // pause the game
-
-
-
-    public void dead () {
-
-    } // end
-
 
     /* ⩔ */
     @Override
